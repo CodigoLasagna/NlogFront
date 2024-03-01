@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
 		maxWidth: 300,
 		flexWrap: 'wrap',
 		backgroundColor: '#4D65B4',
+		color: '#d3d3d3',
 		borderRadius: 8,
 		padding: 10,
 	},
