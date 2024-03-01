@@ -1,15 +1,32 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import axios from 'axios';
+
+axios.defaults.transitional = {
+  forcedJSONParsing: false
+};
 
 const RegisterView = () => {
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [responseText, setResponseText] = useState('');
 
 	const handleRegister = () => {
-		console.log('Username:', username);
-		console.log('Email:', email);
-		console.log('Password:', password);
+		const userData = {
+			username: username,
+			email: email,
+			password: password
+		};
+
+		axios.post('http://localhost:5196/api/User/register', userData)
+			.then(response => {
+				console.log('Respuesta del servidor:', response.data);
+				setResponseText(response.data); // Guarda la respuesta del servidor en el estado
+			})
+			.catch(error => {
+				console.error('Error al realizar la solicitud:', error);
+			});
 	};
 
 	return (
@@ -38,6 +55,7 @@ const RegisterView = () => {
 			<TouchableOpacity style={styles.button} onPress={handleRegister}>
 				<Text style={styles.buttonText}>Crear</Text>
 			</TouchableOpacity>
+			<Text style={styles.responseText}>{responseText}</Text>
 		</View>
 	);
 };
@@ -73,6 +91,15 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: 'bold',
 		color: '#FFFFFF',
+	},
+	responseText: {
+		margin: 10,
+		fontSize: 24,
+		maxWidth: 300,
+		flexWrap: 'wrap',
+		backgroundColor: '#4D65B4',
+		borderRadius: 8,
+		padding: 10,
 	},
 });
 

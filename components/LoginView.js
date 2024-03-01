@@ -1,13 +1,29 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import axios from 'axios';
 
 const LoginView = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [p_key, setPkey] = useState('');
+	const [responseText, setResponseText] = useState('');
 
 	const handleLogin = () => {
-		console.log('Email:', email);
-		console.log('Password:', password);
+		const url = `http://localhost:5196/api/User/login/${p_key}`;
+
+		const loginData = {
+			email: email,
+			password: password
+		};
+
+		axios.post(url, loginData)
+			.then(response => {
+				console.log('Respuesta del servidor:', response.data);
+				setResponseText(response.data);
+			})
+			.catch(error => {
+				console.error('Error al realizar la solicitud:', error);
+			});
 	};
 
 	return (
@@ -27,9 +43,17 @@ const LoginView = () => {
 				value={password}
 				onChangeText={setPassword}
 			/>
+			<TextInput
+				style={styles.input}
+				placeholder="Llave"
+				secureTextEntry
+				value={p_key}
+				onChangeText={setPkey}
+			/>
 			<TouchableOpacity style={styles.button} onPress={handleLogin}>
 				<Text style={styles.buttonText}>Iniciar</Text>
 			</TouchableOpacity>
+			<Text style={styles.responseText}>{responseText}</Text>
 		</View>
 	);
 };
@@ -65,6 +89,15 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: 'bold',
 		color: '#FFFFFF',
+	},
+	responseText: {
+		margin: 10,
+		fontSize: 24,
+		maxWidth: 300,
+		flexWrap: 'wrap',
+		backgroundColor: '#4D65B4',
+		borderRadius: 8,
+		padding: 10,
 	},
 });
 
